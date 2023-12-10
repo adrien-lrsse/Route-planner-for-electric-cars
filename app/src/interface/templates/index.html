@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/home.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>
+    <title>FindMyWay - Recharge de voiture électrique</title>
+  </head>
+  <body onload="initialisation_parametre({{resultat}});return false">
+    <div class="box_title">
+      <div></div>
+      <h1 class="main_title">FindMyWay - Mode itinéraire</h1>
+      <div><a href="/simulation">Mode simulation</a></div>
+  </div>
+    <div class="finding_form">
+      <form id="form_recherche" action="/find_itinerary" method="post">
+        <input name="depart" type="text" placeholder="adresse de départ" />
+        <input name="arrivee" type="text" placeholder="adresse d'arrivée" />
+        <input class="submit" type="submit" value="Rechercher" />
+      </form>
+
+      </div>
+      <p class="status">{{status}}</p>
+
+
+      <div id="choix_vehicule">
+        <h3><u>Choix du véhicule :</u></h3>
+        <div style="display: flex;flex-direction: row;">
+          <h3>Marque : </h3>
+          <select name="" id="select_car">
+            {% for cle in voiture.keys() %}
+            <option value="{{cle}}">{{cle}}</option>
+            {%endfor%}
+          </select>
+          <h3>Modèle : </h3>
+  
+          <select method="post" name="selectmodele" id="selectmodele"></select>
+
+      </div>
+      </div>
+      <div class="finding_parametre">
+        <div class="radio_opt">
+          <button id="settings">Afficher les paramètres</button>
+          <div class="form_opt">
+            <input type="radio" name="optimisation" id="temps_opt" value="2" checked>
+            <label for="temps_opt">Optimisation en temps</label>
+            <input type="radio" name="optimisation" id="distance_opt" value="1">
+            <label for="distance_opt">Optimisation en distance</label>
+          </div>
+          
+        </div>
+        
+        <div id="form_param">
+
+
+
+          <div class="autonomie_initale">
+            <h3>Paramètrage de l'autonomie initale : </h3>
+            <div style="display: flex; flex-direction: row;" class="autonomie">
+              <div style="display: flex; flex-direction: column;" class="text"> 
+                <p id="auto_max"></p>
+                <p id="auto_initial"></p>
+              </div>
+            <div style="display: flex; flex-direction: column;" class="box_slider">
+              <p id="pct_int_charge">Charge de la batterie : 100 %</p>
+              <input type="range" min="1" max="100" value="100" class="slider" id="pct_autonomie_initial">
+            </div>
+          </div>
+          </div>
+
+          <div class="limiteur_autonomie">
+            <h3>Limite de décharge :</h3>
+            <div style="display: flex; flex-direction: column;" class="autonomie">
+              <p id="text_delimiter">Seuil de décharge : 0 %</p>
+              <input type="range" min="0" max="100" value="0" name="reserve" class="slider" id="limite_decharge">
+            </div>
+
+          </div>
+
+          <div class="temps_max">
+            <h3>Temps de recharge maximal par borne :</h3>
+            <div class="temps">
+              <div>
+                <input type="checkbox" id="limit" name="reponse" value="oui">
+                <label for="limit">Pas de limite de temps</label>
+
+              </div>
+              <p id="txt_limit_temps">Temps : 30 min</p>
+              <input type="number" id="input_limit_temps" name="age" min="0" max="240" value="30">
+            </div>
+          </div>
+            
+        </div>
+      </div>
+    </div>
+    <div class="display_map_etape">
+      <div class="box_map">
+        <div id="map"></div>
+      </div>
+      
+      
+      
+      {% if detail == [] %}
+      <div class="etape">
+        <div class="display_etape">
+          <h3>⚠️ • Nous n'avons pas trouvé d'itinéraire</h3>
+        </div>
+      </div>
+      {% else %}
+      <div  class="etape">
+        <div class="info_trajet">
+          <p class="sous-titre">{{detail[0]}}</p>
+          <p>vers</p>
+          <p class="sous-titre">{{detail[1]}}</p>
+        </div>
+        <span>
+
+          <p class="distance_depart_arrivee">Distance à vol d'oiseau : <b>{{detail[2]|round(1)}} km</b></p>
+          
+          <p class="distance_depart_arrivee">Distance du trajet : <b>{{distance_parcouru|round(1)}} km</b></p>
+          
+          <p class="distance_depart_arrivee">Autonomie au départ : <b>{{detail[3]|round(1)}} km</b></p>
+  
+          <p class="distance_depart_arrivee">Autonomie à l'arrivée : <b>{{detail[4]|round(1)}} km</b></p>
+        </span>
+
+        {% for d in resultat%}
+
+        <div class="display_etape">
+          <h3>Étape {{d[0]}} : {{d[1]}} ({{d[4]|round(1)}} km)</h3>
+          <!-- <ul>
+            Distance à la borne précédente:
+            <b>{{d[4]}} km</b>
+          </ul> -->
+          <ul>
+            <b>{{d[5]|round(1)}} km</b>
+            avant l'arrivée.
+          </ul>
+          <ul>
+            <b>{{d[6]|round(1)}} km </b>
+            d'autonomie avant recharge à la borne.
+            
+          </ul>
+        </div>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <script>
+      // Ajout de la carte
+
+      var id_unique;
+      var longitude;
+      var latitude;
+
+      function initialisation_parametre(liste_etape) {
+        id_unique = new Array(liste_etape.length);
+        longitude = new Array(liste_etape.length);  
+        latitude = new Array(liste_etape.length); 
+        for (var i = 0; i < liste_etape.length; i++) {
+          id_unique[i] = liste_etape[i][0];
+          longitude[i] = liste_etape[i][2];
+          latitude[i] = liste_etape[i][3];   
+        }   
+        affichageMap(longitude,latitude)
+      }
+
+      function affichageMap(longitude,latitude){
+        const key = "1PB6znVWrQC3JvrDjX1j";
+        const source = new ol.source.TileJSON({
+          url: `https://api.maptiler.com/maps/streets-v2/tiles.json?key=${key}`,
+          tileSize: 512,
+          crossOrigin: "anonymous",
+        });
+  
+        const attribution = new ol.control.Attribution({
+          collapsible: false,
+        });
+  
+        const map = new ol.Map({
+          layers: [
+            new ol.layer.Tile({
+              source: source,
+            }),
+          ],
+          controls: ol.control.defaults
+            .defaults({ attribution: false })
+            .extend([attribution]),
+          target: "map",
+          view: new ol.View({
+            constrainResolution: true,
+            center: ol.proj.fromLonLat([2.471829, 46.677531]),
+            zoom: 6,
+          }),
+        });
+  
+        // Création de vecteur
+        
+        for (let i = 0; i < longitude.length; i++) {
+          
+          const layer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+              features: [
+                new ol.Feature({
+                  geometry: new ol.geom.Point(
+                    ol.proj.fromLonLat([longitude[i], latitude[i]])
+                  ),
+                }),
+              ],
+            }),
+            style: new ol.style.Style({
+              image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                crossOrigin: "anonymous",
+                src: "https://docs.maptiler.com/openlayers/default-marker/marker-icon.png",
+              }),
+            }),
+          });
+          map.addLayer(layer);
+        }
+        
+      }
+
+      
+
+    </script>
+      <script src="/static/javascript/map.js">         
+      </script>
+       <script>
+          document.addEventListener('DOMContentLoaded', function() {
+          var dic_python = '{{voiture|tojson}}';
+          initialisation_voiture(dic_python);
+          });
+
+          
+       </script>
+
+  </body>
+</html>

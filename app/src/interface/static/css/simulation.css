@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300&display=swap');
+
+
+body{
+    background-color: #1C2942;
+}
+
+.main_title{
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    color: white;
+    width: 100%;
+}
+.box_title{
+    margin-top: 2.5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.box_title div{
+    display: flex;
+    width: 25%;
+    align-items: center;
+}
+.box_title div a{
+    background-color: white;
+    text-decoration: none;
+    color:#1C2942;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    font-family: 'Quicksand';
+    text-align: center;
+    padding: 5%;
+    border-radius: 50px;
+    border: 1px solid #1C2942;
+    box-shadow: 5px 2.5px 2.5px #20304d;
+}
+
+.box_title div a:hover{
+    background-color: #20304d;
+    color: white;
+    font-family: 'Quicksand';
+    text-align: center;
+    padding: 5%;
+    box-shadow: 5px 2.5px 2.5px white;
+}
+.box_map{
+    margin-left: 5%;
+    width: 90%;
+}
+#map {
+    width: 100%;
+    height: 650px;
+
+}
+.arrow{
+    display: flex;
+    flex-direction: row;
+    width:90%;
+    margin-left:5%;
+    justify-content: space-around;
+}
+
+.arrow button{
+    color: white;
+    background: none;
+    border: none;
+    font-family: 'Quicksand';
+    font-size: xx-large;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+}
+
+.arrow button:hover{
+    text-decoration: underline;
+    background-color: #20304d;
+    border-radius: 50px;
+    cursor: pointer;
+   
+}
+
+.arrow p{
+    color: white;
+    background: none;
+    border: none;
+    font-family: 'Quicksand';
+    font-size: xx-large;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.form_simulation{
+    margin-left: 5%;
+    width: 90%;
+    margin-bottom: 1.5%;
+}
+
+.form_simulation .number_simulation{
+    width: 40%;
+    background: none;
+    border: none;
+    border-bottom: 2px solid white;
+    padding: 1%;
+    color: white;
+    font-family: 'Quicksand';
+    font-size: large;
+    margin-left: 2%;
+}
+
+.form_simulation .submit_simulation{
+    border: 2px solid white;
+    padding: 1%;
+    font-family: 'Quicksand';
+    font-size: large;
+    width: 20%;
+    color:#1C2942 ;
+    background-color: white;
+}
+
+.form_simulation .submit_simulation:hover{
+    background-color: #1C2942;
+    color:white ;
+
+}
+#status_generation{
+    
+    font-family: 'Quicksand';
+    font-size: large;
+    color:white ;
+
+}
+
+.legende {
+    margin-left: 5%;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.legende h3{
+    color: white;
+    font-family: 'Quicksand';
+    text-decoration: underline;
+}
+
+.legende span{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.legende span img{
+    width: 20px;
+    height: 20px;
+}
+.legende span .bloc_img{
+    color: white;
+    font-family: 'Quicksand';
+    
+}
+
+.status_sim{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+
+    margin-left: 5%;
+    width: 90%;
+}
+
+.status_sim #trajet_fin{
+    font-family: 'Quicksand';
+    font-size: large;
+    color:white ;
+
+}
